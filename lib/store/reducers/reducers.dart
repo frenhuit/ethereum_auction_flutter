@@ -9,6 +9,7 @@ final appReducer = combineReducers<AppState>([
   TypedReducer<AppState, UpdateUserCredentialAction>(_updateUserCredential),
   TypedReducer<AppState, ClearPreviousAuctionAction>(_clearAuctionDetail),
   TypedReducer<AppState, AuctionDetail>(_updateAuctionDetail),
+  TypedReducer<AppState, UpdateLoadingStateAction>(_updateLoadingState),
 ]);
 
 AppState _updateAuctionSummaries(
@@ -30,3 +31,6 @@ AppState _clearAuctionDetail(
 
 AppState _updateAuctionDetail(AppState state, AuctionDetail auctionDetail) =>
     state.rebuild((b) => b.auctionDetail.replace(auctionDetail));
+
+AppState _updateLoadingState(AppState state, UpdateLoadingStateAction action) =>
+    state.rebuild((b) => b.isLoading = action.loadingState);

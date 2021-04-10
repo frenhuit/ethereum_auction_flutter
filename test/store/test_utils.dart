@@ -21,5 +21,6 @@ class ActionLoggingReducer extends ReducerClass<AppState> {
   @override
   AppState call(AppState state, dynamic action) {
     dispatchedActions.add(action);
+    return state;
   }
 }

@@ -1,11 +1,11 @@
 import 'package:quiver/check.dart';
 import 'package:web3dart/credentials.dart';
 
-class GetAuctionSummariesAction {
+class GetAuctionSummariesAction extends AsyncAction {
   GetAuctionSummariesAction();
 }
 
-class CreateAuctionAction {
+class CreateAuctionAction extends AsyncAction {
   Credentials _userCredential;
   List<dynamic> _args;
 
@@ -30,7 +30,7 @@ class UpdateEthResponseAction {
   String get response => _response;
 }
 
-class GetUserCredentialAction {
+class GetUserCredentialAction extends AsyncAction {
   String _privateKey;
 
   GetUserCredentialAction(String privateKey) {
@@ -58,7 +58,7 @@ class UpdateUserCredentialAction {
   Credentials get credential => _credential;
 }
 
-class GetAuctionDetailAction {
+class GetAuctionDetailAction extends AsyncAction {
   EthereumAddress _contractAddress;
 
   EthereumAddress get contractAddress => _contractAddress;
@@ -73,7 +73,7 @@ class ClearPreviousAuctionAction {
   ClearPreviousAuctionAction();
 }
 
-class BidAction {
+class BidAction extends AsyncAction {
   EthereumAddress _contractAddress;
   Credentials _credential;
   BigInt _amount;
@@ -94,7 +94,7 @@ class BidAction {
   BigInt get amount => _amount;
 }
 
-class RevokeAction {
+class RevokeAction extends AsyncAction {
   EthereumAddress _contractAddress;
   Credentials _credential;
 
@@ -110,7 +110,7 @@ class RevokeAction {
   Credentials get credential => _credential;
 }
 
-class EndAction {
+class EndAction extends AsyncAction {
   EthereumAddress _contractAddress;
   Credentials _credential;
 
@@ -126,7 +126,7 @@ class EndAction {
   EthereumAddress get contractAddress => _contractAddress;
 }
 
-class CancelAction {
+class CancelAction extends AsyncAction {
   EthereumAddress _contractAddress;
   Credentials _credential;
 
@@ -142,7 +142,7 @@ class CancelAction {
   Credentials get credential => _credential;
 }
 
-class UpdateShippingInfoAction {
+class UpdateShippingInfoAction extends AsyncAction {
   EthereumAddress _contractAddress;
   Credentials _credential;
   String _shippingInfo;
@@ -162,3 +162,11 @@ class UpdateShippingInfoAction {
 
   EthereumAddress get contractAddress => _contractAddress;
 }
+
+class UpdateLoadingStateAction {
+  final bool loadingState;
+
+  const UpdateLoadingStateAction(this.loadingState);
+}
+
+class AsyncAction {}

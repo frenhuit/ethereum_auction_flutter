@@ -10,6 +10,7 @@ class MiddlewareProvider {
   MiddlewareProvider._();
 
   static List<Middleware<AppState>> middlewares = <Middleware<AppState>>[
+    TypedMiddleware<AppState, AsyncAction>(_startLoading),
     TypedMiddleware<AppState, GetAuctionSummariesAction>(_getAuctionSummaries),
     TypedMiddleware<AppState, CreateAuctionAction>(_createAuction),
     TypedMiddleware<AppState, GetUserCredentialAction>(_getUserCredential),
@@ -20,22 +21,31 @@ class MiddlewareProvider {
     TypedMiddleware<AppState, EndAction>(_end),
     TypedMiddleware<AppState, CancelAction>(_cancel),
     TypedMiddleware<AppState, UpdateShippingInfoAction>(_updateShippingInfo),
+    TypedMiddleware<AppState, AsyncAction>(_endLoading),
   ];
 
   static AuctionService service = AuctionServiceImpl();
 
+  static void _startLoading(
+      Store<AppState> store, AsyncAction action, NextDispatcher next) {
+    store.dispatch(UpdateLoadingStateAction(true));
+    next(action);
+  }
+
   static void _getAuctionSummaries(Store<AppState> store,
-          GetAuctionSummariesAction action, NextDispatcher next) async =>
-      store.dispatch(await service.auctionFactoryInstance
-          .getSummaries(Web3Client(store.state.appConfig.rpcUrl, Client())));
+      GetAuctionSummariesAction action, NextDispatcher next) async {
+    store.dispatch(await service.auctionFactoryInstance
+        .getSummaries(Web3Client(store.state.appConfig.rpcUrl, Client())));
+    next(action);
+  }
 
   static void _createAuction(Store<AppState> store, CreateAuctionAction action,
-          NextDispatcher next) async =>
-      store.dispatch(UpdateEthResponseAction(
-          await service.auctionFactoryInstance.createAuction(
-              Web3Client(store.state.appConfig.rpcUrl, Client()),
-              action.userCredential,
-              action.args)));
+      NextDispatcher next) async {
+    store.dispatch(UpdateEthResponseAction(await service.auctionFactoryInstance
+        .createAuction(Web3Client(store.state.appConfig.rpcUrl, Client()),
+            action.userCredential, action.args)));
+    next(action);
+  }
 
   static void _filterEthResponse(Store<AppState> store,
       UpdateEthResponseAction action, NextDispatcher next) {
@@ -57,6 +67,8 @@ class MiddlewareProvider {
       await store.dispatch(updateUserCredentialAction);
     } catch (e) {
       store.dispatch(UpdateEthResponseAction(e.toString()));
+    } finally {
+      next(action);
     }
   }
 
@@ -69,43 +81,59 @@ class MiddlewareProvider {
           await service.auctionAt(action.contractAddress).getDetail(ethClient));
     } catch (e) {
       store.dispatch(UpdateEthResponseAction(e.toString()));
+    } finally {
+      next(action);
     }
   }
 
   static void _bid(
-          Store<AppState> store, BidAction action, NextDispatcher next) async =>
-      store.dispatch(UpdateEthResponseAction(await service
-          .auctionAt(action.contractAddress)
-          .bid(Web3Client(store.state.appConfig.rpcUrl, Client()),
-              action.credential, action.amount)));
+      Store<AppState> store, BidAction action, NextDispatcher next) async {
+    store.dispatch(UpdateEthResponseAction(await service
+        .auctionAt(action.contractAddress)
+        .bid(Web3Client(store.state.appConfig.rpcUrl, Client()),
+            action.credential, action.amount)));
+    next(action);
+  }
 
-  static void _revoke(Store<AppState> store, RevokeAction action,
-          NextDispatcher next) async =>
-      store.dispatch(UpdateEthResponseAction(await service
-          .auctionAt(action.contractAddress)
-          .revoke(Web3Client(store.state.appConfig.rpcUrl, Client()),
-              action.credential)));
+  static void _revoke(
+      Store<AppState> store, RevokeAction action, NextDispatcher next) async {
+    store.dispatch(UpdateEthResponseAction(await service
+        .auctionAt(action.contractAddress)
+        .revoke(Web3Client(store.state.appConfig.rpcUrl, Client()),
+            action.credential)));
+    next(action);
+  }
 
   static void _end(
-          Store<AppState> store, EndAction action, NextDispatcher next) async =>
-      store.dispatch(UpdateEthResponseAction(await service
-          .auctionAt(action.contractAddress)
-          .end(Web3Client(store.state.appConfig.rpcUrl, Client()),
-              action.credential)));
+      Store<AppState> store, EndAction action, NextDispatcher next) async {
+    store.dispatch(UpdateEthResponseAction(await service
+        .auctionAt(action.contractAddress)
+        .end(Web3Client(store.state.appConfig.rpcUrl, Client()),
+            action.credential)));
+    next(action);
+  }
 
-  static void _cancel(Store<AppState> store, CancelAction action,
-          NextDispatcher next) async =>
-      store.dispatch(UpdateEthResponseAction(await service
-          .auctionAt(action.contractAddress)
-          .cancel(Web3Client(store.state.appConfig.rpcUrl, Client()),
-              action.credential)));
+  static void _cancel(
+      Store<AppState> store, CancelAction action, NextDispatcher next) async {
+    store.dispatch(UpdateEthResponseAction(await service
+        .auctionAt(action.contractAddress)
+        .cancel(Web3Client(store.state.appConfig.rpcUrl, Client()),
+            action.credential)));
+    next(action);
+  }
 
   static void _updateShippingInfo(Store<AppState> store,
-          UpdateShippingInfoAction action, NextDispatcher next) async =>
-      store.dispatch(UpdateEthResponseAction(await service
-          .auctionAt(action.contractAddress)
-          .updateShippingInfo(
-              Web3Client(store.state.appConfig.rpcUrl, Client()),
-              action.credential,
-              action.shippingInfo)));
+      UpdateShippingInfoAction action, NextDispatcher next) async {
+    store.dispatch(UpdateEthResponseAction(await service
+        .auctionAt(action.contractAddress)
+        .updateShippingInfo(Web3Client(store.state.appConfig.rpcUrl, Client()),
+            action.credential, action.shippingInfo)));
+    next(action);
+  }
+
+  static void _endLoading(
+      Store<AppState> store, AsyncAction action, NextDispatcher next) {
+    store.dispatch(UpdateLoadingStateAction(false));
+    next(action);
+  }
 }

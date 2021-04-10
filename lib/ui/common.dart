@@ -75,3 +75,12 @@ Widget errorCard(BuildContext context, String errorInfo) => ListTile(
       errorInfo,
       style: TextStyle(color: Theme.of(context).colorScheme.error),
     ));
+
+class loadingIndicator extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => StoreConnector<AppState, bool>(
+      converter: (store) => store.state.isLoading,
+      builder: (context, isLoading) =>
+          isLoading ? CircularProgressIndicator() : Container(),
+      distinct: true);
+}

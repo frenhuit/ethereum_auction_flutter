@@ -6,6 +6,7 @@ import 'package:flutter/material.dart' hide ActionDispatcher;
 import 'package:flutter_redux/flutter_redux.dart';
 
 import '../store/models/app_state.dart';
+import 'common.dart';
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -19,36 +20,37 @@ class MyHomePage extends StatelessWidget {
         converter: (_) => HomeViewModel.of(context),
         builder: (context, viewModel) => Scaffold(
           appBar: myAppBar(context, title),
-          body: Center(
-            child: viewModel.auctionSummaries.isNotEmpty
-                ? ListView(
-                    children: viewModel.auctionSummaries
-                        .map(
-                          (auctionSummary) => Card(
-                            child: ListTile(
-                              leading: Icon(Icons.store),
-                              title: Text(
-                                auctionSummary.item,
-                              ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(auctionSummary.address.toString()),
-                                  Divider(),
-                                  Text(auctionSummary.itemDescription),
-                                ],
-                              ),
-                              onTap: () {
-                                ActionDispatcher.of(context)
-                                    .getAuctionDetail(auctionSummary.address);
-                                Navigator.pushNamed(context, '/detail');
-                              },
-                            ),
+          body: Stack(
+            children: [
+              ListView(
+                children: viewModel.auctionSummaries
+                    .map(
+                      (auctionSummary) => Card(
+                        child: ListTile(
+                          leading: Icon(Icons.store),
+                          title: Text(
+                            auctionSummary.item,
                           ),
-                        )
-                        .toList(),
-                  )
-                : CircularProgressIndicator(),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(auctionSummary.address.toString()),
+                              Divider(),
+                              Text(auctionSummary.itemDescription),
+                            ],
+                          ),
+                          onTap: () {
+                            ActionDispatcher.of(context)
+                                .getAuctionDetail(auctionSummary.address);
+                            Navigator.pushNamed(context, '/detail');
+                          },
+                        ),
+                      ),
+                    )
+                    .toList(),
+              ),
+              Center(child: loadingIndicator()),
+            ],
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () => Navigator.pushNamed(context, "/new"),

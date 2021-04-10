@@ -44,4 +44,9 @@ void main() {
     store.dispatch(TestData.auctionDetail);
     expect(store.state.auctionDetail, equals(TestData.auctionDetail));
   });
+
+  test('updateLoadingState', () {
+    store.dispatch(UpdateLoadingStateAction(true));
+    expect(store.state.isLoading, true);
+  });
 }

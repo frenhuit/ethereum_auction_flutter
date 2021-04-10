@@ -23,6 +23,8 @@ abstract class AppState implements Built<AppState, AppStateBuilder> {
 
   AppConfig get appConfig;
 
+  bool get isLoading;
+
   AppState._();
 
   factory AppState([updates(AppStateBuilder b)]) = _$AppState;
@@ -39,6 +41,7 @@ abstract class AppState implements Built<AppState, AppStateBuilder> {
           ..currentState = AuctionState.open
           ..shippingInfo = ''));
         b.appConfig.replace(AppConfig.initiatlize(network: network));
+        b.isLoading = false;
         // initializes AuctionFactory instance
         AuctionFactory.instance(
             contractAddress: b.appConfig.auctionFactoryAddress);

@@ -38,6 +38,9 @@ class _$AppStateSerializer implements StructuredSerializer<AppState> {
       'appConfig',
       serializers.serialize(object.appConfig,
           specifiedType: const FullType(AppConfig)),
+      'isLoading',
+      serializers.serialize(object.isLoading,
+          specifiedType: const FullType(bool)),
     ];
 
     return result;
@@ -75,6 +78,10 @@ class _$AppStateSerializer implements StructuredSerializer<AppState> {
         case 'appConfig':
           result.appConfig.replace(serializers.deserialize(value,
               specifiedType: const FullType(AppConfig)) as AppConfig);
+          break;
+        case 'isLoading':
+          result.isLoading = serializers.deserialize(value,
+              specifiedType: const FullType(bool)) as bool;
           break;
       }
     }
@@ -327,6 +334,8 @@ class _$AppState extends AppState {
   final String ethResponse;
   @override
   final AppConfig appConfig;
+  @override
+  final bool isLoading;
 
   factory _$AppState([void Function(AppStateBuilder) updates]) =>
       (new AppStateBuilder()..update(updates)).build();
@@ -336,7 +345,8 @@ class _$AppState extends AppState {
       this.auctionDetail,
       this.user,
       this.ethResponse,
-      this.appConfig})
+      this.appConfig,
+      this.isLoading})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(
         auctionSummaries, 'AppState', 'auctionSummaries');
@@ -346,6 +356,7 @@ class _$AppState extends AppState {
     BuiltValueNullFieldError.checkNotNull(
         ethResponse, 'AppState', 'ethResponse');
     BuiltValueNullFieldError.checkNotNull(appConfig, 'AppState', 'appConfig');
+    BuiltValueNullFieldError.checkNotNull(isLoading, 'AppState', 'isLoading');
   }
 
   @override
@@ -363,17 +374,22 @@ class _$AppState extends AppState {
         auctionDetail == other.auctionDetail &&
         user == other.user &&
         ethResponse == other.ethResponse &&
-        appConfig == other.appConfig;
+        appConfig == other.appConfig &&
+        isLoading == other.isLoading;
   }
 
   @override
   int get hashCode {
     return $jf($jc(
         $jc(
-            $jc($jc($jc(0, auctionSummaries.hashCode), auctionDetail.hashCode),
-                user.hashCode),
-            ethResponse.hashCode),
-        appConfig.hashCode));
+            $jc(
+                $jc(
+                    $jc($jc(0, auctionSummaries.hashCode),
+                        auctionDetail.hashCode),
+                    user.hashCode),
+                ethResponse.hashCode),
+            appConfig.hashCode),
+        isLoading.hashCode));
   }
 
   @override
@@ -383,7 +399,8 @@ class _$AppState extends AppState {
           ..add('auctionDetail', auctionDetail)
           ..add('user', user)
           ..add('ethResponse', ethResponse)
-          ..add('appConfig', appConfig))
+          ..add('appConfig', appConfig)
+          ..add('isLoading', isLoading))
         .toString();
   }
 }
@@ -416,6 +433,10 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
       _$this._appConfig ??= new AppConfigBuilder();
   set appConfig(AppConfigBuilder appConfig) => _$this._appConfig = appConfig;
 
+  bool _isLoading;
+  bool get isLoading => _$this._isLoading;
+  set isLoading(bool isLoading) => _$this._isLoading = isLoading;
+
   AppStateBuilder();
 
   AppStateBuilder get _$this {
@@ -426,6 +447,7 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
       _user = $v.user.toBuilder();
       _ethResponse = $v.ethResponse;
       _appConfig = $v.appConfig.toBuilder();
+      _isLoading = $v.isLoading;
       _$v = null;
     }
     return this;
@@ -453,7 +475,9 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
               user: user.build(),
               ethResponse: BuiltValueNullFieldError.checkNotNull(
                   ethResponse, 'AppState', 'ethResponse'),
-              appConfig: appConfig.build());
+              appConfig: appConfig.build(),
+              isLoading: BuiltValueNullFieldError.checkNotNull(
+                  isLoading, 'AppState', 'isLoading'));
     } catch (_) {
       String _$failedField;
       try {
